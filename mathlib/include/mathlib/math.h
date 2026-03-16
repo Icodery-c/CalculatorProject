@@ -80,7 +80,7 @@ namespace mathlib {
 
     if (*error) { return 0; }
 
-    if (__builtin_mul_overflow(result, n, &result))
+    if (__builtin_mul_overflow(result, num, &result))
     {
         *error = 1;
         return 0;
