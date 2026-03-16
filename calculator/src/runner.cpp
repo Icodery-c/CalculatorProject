@@ -17,6 +17,8 @@ void run(int argc, char **argv) {
     return;
   }
 
+  error = check(&data);
+
   if (!error) {
     error = calculate(&data);
   }

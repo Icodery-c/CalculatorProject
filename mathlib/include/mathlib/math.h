@@ -70,24 +70,31 @@ namespace mathlib {
       return result;
   }
 
-  inline int FactorialOperation (int num, int* error) {
+  inline int FactorialOperation(int num, int* error) {
 
-    if (num < 0) { *error = 1; return 0; }
+      if (num < 0) {
 
-    if (num <= 1) { return 1; }
+          *error = 1;
+          return 0;
+      }
 
-    int result = FactorialOperation(num-1, error);
+      if (num <= 1)
+          return 1;
 
-    if (*error) { return 0; }
+      int prev = FactorialOperation(num - 1, error);
 
-    if (__builtin_mul_overflow(result, num, &result))
-    {
-        *error = 1;
-        return 0;
-    }
+      if (*error)
+          return 0;
 
-    return result * num;
+      int result = 0;
 
+      if (__builtin_mul_overflow(prev, num, &result)) {
+
+          *error = 1;
+          return 0;
+      }
+
+      return result;
   }
 
 }

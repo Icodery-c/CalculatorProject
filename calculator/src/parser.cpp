@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
-
+#include <string.h>
+#include <iostream>
 #include "parser.h"
 
 void parse(int argc, char **argv, Data *data) {
@@ -20,7 +21,8 @@ void parse(int argc, char **argv, Data *data) {
       break;
 
     case 'o':
-      data->op = optarg[0];
+      if (optarg[0] == '*' || strlen(optarg) > 1) { data->op = '*'; }
+      else { data->op = optarg[0]; }
       break;
 
     case 'h':

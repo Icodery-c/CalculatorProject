@@ -32,6 +32,11 @@ int calculate(Data *data) {
   case '!':
     data->result = mathlib::FactorialOperation(data->num1, &error);
     break;
+
+  default:
+    error = 1;
+    break;
+    
   }
 
   return error;
