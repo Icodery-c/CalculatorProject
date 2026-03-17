@@ -2,6 +2,8 @@
 
 int check(Data *data) {
 
+  if (data->op == 'e') return 1;
+
   if ((data->op == '+') || (data->op == '-') || (data->op == '*') ||
       (data->op == '/') || (data->op == '^') || (data->op == '!')) {
 
