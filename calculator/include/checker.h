@@ -2,4 +2,10 @@
 
 #include "data.h"
 
-int check(Data *data);
+class Checker {
+
+    public:
+
+        void check (const Data& data);
+
+};
