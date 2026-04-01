@@ -1,3 +1,8 @@
 #pragma once
 
-void run(int argc, char **argv);
+class Runner {
+
+    public:
+    
+        void run (int argc, char **argv);
+};
