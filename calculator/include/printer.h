@@ -1,7 +1,16 @@
 #pragma once
 
 #include "data.h"
+#include <string>
 
-void print(Data *data, int error);
+class Printer {
 
-void help();
+    public:
+
+        void printResult (int result);
+
+        void printError (const std::string& msg);
+
+        void printHelp ();
+
+};
