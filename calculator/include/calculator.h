@@ -6,6 +6,6 @@ class Calculator {
 
     public:
 
-        int calculate (const Data& data);
+        int calculate (Data& data);
 
 };
