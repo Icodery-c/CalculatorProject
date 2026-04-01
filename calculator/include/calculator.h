@@ -2,4 +2,10 @@
 
 #include "data.h"
 
-int calculate(Data *data);
+class Calculator {
+
+    public:
+
+        int calculate (const Data& data);
+
+};
