@@ -2,4 +2,10 @@
 
 #include "data.h"
 
-void parse(int argc, char **argv, Data *data);
+class Parser {
+
+    public:
+    
+        Data parse (int argc, char **argv);
+
+};
