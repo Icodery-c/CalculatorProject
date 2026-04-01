@@ -1,14 +1,14 @@
 #include "checker.h"
+#include <stdexcept>
+#include <string>
 
-int check(Data *data) {
+void Checker::check(const Data& data) {
 
-  if (data->op == 'e') return 1;
+    if (!((data.op == '+') || (data.op == '-') || (data.op == '*') ||
+      (data.op == '/') || (data.op == '^') || (data.op == '!'))) {
 
-  if ((data->op == '+') || (data->op == '-') || (data->op == '*') ||
-      (data->op == '/') || (data->op == '^') || (data->op == '!')) {
+        throw std::runtime_error("Unknown operation");
 
-    return 0;
-  }
+    }
 
-  return 1;
 }
