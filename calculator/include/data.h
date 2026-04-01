@@ -1,9 +1,10 @@
 #pragma once
 
-struct Data {
+class Data {
 
-  int num1;
-  int num2;
-  char op;
-  int result;
+    int num1;
+    int num2;
+    char op;
+    int result;
+
 };
