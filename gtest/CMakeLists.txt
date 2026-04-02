@@ -11,7 +11,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(../mathlib ${CMAKE_BINARY_DIR}/mathlib)
+FetchContent_Declare(
+    mathlib
+    GIT_REPOSITORY https://github.com/Icodery-c/mathlib.git
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(mathlib)
+
 add_subdirectory(../logger ${CMAKE_BINARY_DIR}/logger)
 
 FetchContent_Declare(
