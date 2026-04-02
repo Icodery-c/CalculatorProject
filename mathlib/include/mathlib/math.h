@@ -1,61 +1,60 @@
 #pragma once
 
 #include <climits>
-#include <stdexcept>
 
 namespace mathlib {
 
-  inline int AdditionOperation(int num1, int num2) {
+  inline int AdditionOperation(int num1, int num2, int* error) {
 
     int result;
 
     if (__builtin_add_overflow(num1, num2, &result))
     {
-        throw std::overflow_error("Addition overflow");
-
+        *error = 1;
+        return 0;
     }
 
     return result;
 
   }
 
-  inline int SubtractionOperation(int num1, int num2) {
+  inline int SubtractionOperation(int num1, int num2, int* error) {
 
     int result;
 
     if (__builtin_sub_overflow(num1, num2, &result))
     {
-        throw std::overflow_error("Subtraction overflow");
-
+        *error = 1;
+        return 0;
     }
 
     return result;
 
   }
 
-  inline int MultiplicationOperation(int num1, int num2) {
+  inline int MultiplicationOperation(int num1, int num2, int* error) {
 
     int result;
 
     if (__builtin_mul_overflow(num1, num2, &result))
     {
-        throw std::overflow_error("Multiplication overflow");
-
+        *error = 1;
+        return 0;
     }
 
     return result;
 
   }
 
-  inline int DivisionOperation (int num1, int num2) {
+  inline int DivisionOperation (int num1, int num2, int* error) {
 
-    if (num2 == 0) { throw std::runtime_error("Division by zero"); }
+    if (num2 == 0) { *error = 1; return 0; }
 
     return num1 / num2;
 
   }
 
-  inline int PowerOperation(int base, int exp) {
+  inline int PowerOperation(int base, int exp, int* error) {
 
       int result = 1;
 
@@ -63,26 +62,39 @@ namespace mathlib {
       {
           if (__builtin_mul_overflow(result, base, &result))
           {
-                throw std::overflow_error("Power overflow");
+              *error = 1;
+              return 0;
           }
       }
 
       return result;
   }
 
-  inline int FactorialOperation(int num) {
+  inline int FactorialOperation(int num, int* error) {
 
-    if (num < 0) { throw std::runtime_error("Negative factorial"); }
+      if (num < 0) {
 
-    if (num <= 1) { return 1; }
+          *error = 1;
+          return 0;
+      }
 
-    int prev = FactorialOperation(num - 1); 
+      if (num <= 1)
+          return 1;
 
-    int result = 0;
-    
-    if (__builtin_mul_overflow(prev, num, &result)) { throw std::overflow_error("Factorial overflow"); }
+      int prev = FactorialOperation(num - 1, error);
 
-    return result;
-}
+      if (*error)
+          return 0;
+
+      int result = 0;
+
+      if (__builtin_mul_overflow(prev, num, &result)) {
+
+          *error = 1;
+          return 0;
+      }
+
+      return result;
+  }
 
 }
