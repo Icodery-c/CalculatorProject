@@ -8,27 +8,27 @@ int Calculator::calculate(Data& data) {
     switch (data.op)
     {
 
-        case '+':
+        case Operation::Add:
             data.result = mathlib::AdditionOperation(data.num1, data.num2);
             break;
 
-        case '-':
+        case Operation::Subtract:
             data.result = mathlib::SubtractionOperation(data.num1, data.num2);
             break;
     
-        case '*':
+        case Operation::Multiply:
             data.result = mathlib::MultiplicationOperation(data.num1, data.num2);
             break;
     
-        case '/':
+        case Operation::Divide:
             data.result = mathlib::DivisionOperation(data.num1, data.num2);
             break;
         
-        case '^':
+        case Operation::Power:
             data.result = mathlib::PowerOperation(data.num1, data.num2);
             break;
 
-        case '!':
+        case Operation::Factorial:
             data.result = mathlib::FactorialOperation(data.num1);
             break;
 
