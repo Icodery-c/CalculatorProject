@@ -1,11 +1,22 @@
 #pragma once
 
-class Data {
+enum class Operation {
+    
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
+    Power,
+    Factorial,
+    Help
 
-    public:
-        int num1;
-        int num2;
-        char op;
-        int result;
+};
+
+struct Data {
+
+    int num1;
+    int num2;
+    Operation op;
+    int result;
 
 };
