@@ -5,12 +5,17 @@
 
 class Printer {
 
-    public:
+public:
+    Printer() = default;
+    ~Printer() = default;
 
-        void printResult (int result);
+    Printer(const Printer&) = default;
+    Printer& operator=(const Printer&) = default;
 
-        void printError (const std::string& msg);
+    Printer(Printer&&) = default;
+    Printer& operator=(Printer&&) = default;
 
-        void printHelp ();
-
+    void printResult(int result);
+    void printError(const std::string& msg);
+    void printHelp();
 };
