@@ -4,8 +4,15 @@
 
 class Checker {
 
-    public:
+public:
+    Checker() = default;
+    ~Checker() = default;
 
-        void check (const Data& data);
+    Checker(const Checker&) = default;
+    Checker& operator=(const Checker&) = default;
 
+    Checker(Checker&&) = default;
+    Checker& operator=(Checker&&) = default;
+
+    void check(const Data& data);
 };
