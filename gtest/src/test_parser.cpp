@@ -13,18 +13,18 @@ TEST(ParserTest, ParsesAdditionCorrectly) {
     Data data = parseJson(R"({"num1":5,"num2":3,"op":"+"})");
     EXPECT_EQ(data.num1, 5);
     EXPECT_EQ(data.num2, 3);
-    EXPECT_EQ(data.op, '+');
+    EXPECT_EQ(data.op, Operation::Add);
 }
 
 TEST(ParserTest, ParsesFactorialCorrectly) {
     Data data = parseJson(R"({"num1":5,"op":"!"})");
     EXPECT_EQ(data.num1, 5);
-    EXPECT_EQ(data.op, '!');
+    EXPECT_EQ(data.op, Operation::Factorial);
 }
 
 TEST(ParserTest, ParsesHelpCorrectly) {
     Data data = parseJson(R"({"op":"h"})");
-    EXPECT_EQ(data.op, 'h');
+    EXPECT_EQ(data.op, Operation::Help);
 }
 
 TEST(ParserTest, ParsesNegativeNumbersCorrectly) {
