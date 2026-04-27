@@ -4,6 +4,9 @@
 #include "checker.h"
 #include "calculator.h"
 #include "printer.h"
+#include "cache.h"
+#include "database.h"
+#include <memory>
 
 class Runner {
 
@@ -11,16 +14,19 @@ class Runner {
     Checker checker;
     Calculator calculator;
     Printer printer;
+    Cache cache;
+    std::unique_ptr<database::Database> db;
 
-public:
-    Runner() = default;
-    ~Runner() = default;
+    public:
 
-    Runner(const Runner&) = default;
-    Runner& operator=(const Runner&) = default;
+        Runner();
+        ~Runner() = default;
 
-    Runner(Runner&&) = default;
-    Runner& operator=(Runner&&) = default;
+        Runner(const Runner&)            = delete;
+        Runner& operator=(const Runner&) = delete;
 
-    void run(int argc, char** argv);
+        Runner(Runner&&)            = default;
+        Runner& operator=(Runner&&) = default;
+
+        void run(int argc, char** argv);
 };
