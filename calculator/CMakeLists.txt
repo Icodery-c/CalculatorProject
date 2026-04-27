@@ -47,6 +47,8 @@ add_executable(calculator
     src/parser.cpp
     src/printer.cpp
     src/runner.cpp
+    src/cache.cpp
+
 )
 
 target_include_directories(calculator PRIVATE include)
@@ -55,6 +57,8 @@ target_include_directories(calculator PRIVATE
     ${mathlib_SOURCE_DIR}/include
 )
 
-target_link_libraries(calculator PRIVATE mathlib nlohmann_json::nlohmann_json logger)
+add_subdirectory(../database ${CMAKE_BINARY_DIR}/database)
+
+target_link_libraries(calculator PRIVATE mathlib nlohmann_json::nlohmann_json logger database)
 
 install(TARGETS calculator DESTINATION /usr/local/bin)
