@@ -1,27 +1,33 @@
 #include "runner.h"
-#include "calculator.h"
-#include "checker.h"
-#include "parser.h"
-#include "printer.h"
+#include "logger.h"
 
-void run(int argc, char **argv) {
+#include <exception>
 
-  Data data{0};
+void Runner::run(int argc, char** argv)
+{
+    auto& log = logger::Logger::Initialize();
 
-  int error = 0;
+    try
+    {
+        log.info("Starting calculator application");
 
-  parse(argc, argv, &data);
+        log.debug("Parsing input...");
+        Data data = parser.parse(argc, argv);
 
-  if (data.op == 'h') {
-    help();
-    return;
-  }
+        if (data.op == Operation::Help) { printer.printHelp(); return; }
 
-  error = check(&data);
+        log.debug("Validating data...");
+        checker.check(data);
 
-  if (!error) {
-    error = calculate(&data);
-  }
+        log.debug("Calculating...");
+        int result = calculator.calculate(data);
 
-  print(&data, error);
+        log.info("Result: " + std::to_string(result));
+        printer.printResult(result);
+
+    } catch (const std::exception& e) {
+
+        log.error(std::string("Unexpected error: ") + e.what());
+        printer.printError(e.what());
+    }
 }

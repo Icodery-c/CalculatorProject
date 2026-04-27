@@ -2,4 +2,17 @@
 
 #include "data.h"
 
-int calculate(Data *data);
+class Calculator {
+
+public:
+    Calculator() = default;
+    ~Calculator() = default;
+
+    Calculator(const Calculator&) = default;
+    Calculator& operator=(const Calculator&) = default;
+
+    Calculator(Calculator&&) = default;
+    Calculator& operator=(Calculator&&) = default;
+
+    int calculate(Data& data);
+};

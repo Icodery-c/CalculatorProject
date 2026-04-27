@@ -2,4 +2,17 @@
 
 #include "data.h"
 
-void parse(int argc, char **argv, Data *data);
+class Parser {
+
+public:
+    Parser() = default;
+    ~Parser() = default;
+
+    Parser(const Parser&) = default;
+    Parser& operator=(const Parser&) = default;
+
+    Parser(Parser&&) = default;
+    Parser& operator=(Parser&&) = default;
+
+    Data parse(int argc, char** argv);
+};
