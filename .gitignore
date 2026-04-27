@@ -4,3 +4,5 @@ _deps/
 *.o
 *.a
 *.swp
+*.sh
+*.data
