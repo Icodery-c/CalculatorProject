@@ -34,6 +34,8 @@ add_executable(calculator_tests
     ../calculator/src/calculator.cpp
     ../calculator/src/checker.cpp
     ../calculator/src/parser.cpp
+    ../calculator/src/cache.cpp
+
 )
 
 target_include_directories(calculator_tests PRIVATE
