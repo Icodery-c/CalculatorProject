@@ -3,20 +3,26 @@
 
 #include <exception>
 #include <string>
+#include <unordered_map>
 
 static const std::string CONNECTION_STRING =
     "host=localhost dbname=calculator_db user=calculator password=calculator";
 
+static const std::unordered_map<Operation, std::string> OPERATION_NAMES = {
+    {Operation::Add,       "Add"},
+    {Operation::Subtract,  "Subtract"},
+    {Operation::Multiply,  "Multiply"},
+    {Operation::Divide,    "Divide"},
+    {Operation::Power,     "Power"},
+    {Operation::Factorial, "Factorial"}
+};
+
 static std::string operationToName(Operation op) {
-    switch (op) {
-        case Operation::Add:       return "Add";
-        case Operation::Subtract:  return "Subtract";
-        case Operation::Multiply:  return "Multiply";
-        case Operation::Divide:    return "Divide";
-        case Operation::Power:     return "Power";
-        case Operation::Factorial: return "Factorial";
-        default:                   return "Unknown";
+    auto it = OPERATION_NAMES.find(op);
+    if (it == OPERATION_NAMES.end()) {
+        return "Unknown";
     }
+    return it->second;
 }
 
 Runner::Runner() : db(std::make_unique<database::Database>(CONNECTION_STRING)) {
