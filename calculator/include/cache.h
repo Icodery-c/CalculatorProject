@@ -15,8 +15,8 @@ public:
     Cache(const Cache&)            = default;
     Cache& operator=(const Cache&) = default;
 
-    Cache(Cache&&)            = default;
-    Cache& operator=(Cache&&) = default;
+    Cache(Cache&&) noexcept       = default;
+    Cache& operator=(Cache&&) noexcept = default;
 
     static std::string makeKey(const Data& data);
 
