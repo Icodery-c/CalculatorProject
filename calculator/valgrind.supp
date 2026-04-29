@@ -1,0 +1,18 @@
+{
+   libpq_krb5_leak
+   Memcheck:Leak
+   ...
+   fun:PQconnectdb
+}
+{
+   libpq_crypto_leak
+   Memcheck:Leak
+   ...
+   fun:PQconnectPoll
+}
+{
+   p11_kit_leak
+   Memcheck:Leak
+   ...
+   obj:*libp11-kit*
+}
