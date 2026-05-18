@@ -6,6 +6,8 @@
 #include "printer.h"
 #include "cache.h"
 #include "database.h"
+#include "server.h"
+
 #include <memory>
 
 class Runner {
@@ -16,9 +18,11 @@ class Runner {
     Printer printer;
     Cache cache;
     std::unique_ptr<database::Database> db;
+    std::unique_ptr<server::Server> srv;
 
-    public:
+    std::string handleRequest(const std::string& request);
 
+    public: 
         Runner();
         ~Runner() = default;
 
@@ -28,5 +32,8 @@ class Runner {
         Runner(Runner&&)            = default;
         Runner& operator=(Runner&&) = default;
 
-        void run(int argc, char** argv);
+        void run();
+
+        void stop();
+
 };
