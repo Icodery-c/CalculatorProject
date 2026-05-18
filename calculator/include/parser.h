@@ -1,18 +1,21 @@
 #pragma once
 
 #include "data.h"
+#include <string>
 
 class Parser {
 
-public:
-    Parser() = default;
-    ~Parser() = default;
+    public:
+    
+        Parser() = default;
+        ~Parser() = default;
 
-    Parser(const Parser&) = default;
-    Parser& operator=(const Parser&) = default;
+        Parser(const Parser&)            = default;
+        Parser& operator=(const Parser&) = default;
 
-    Parser(Parser&&) = default;
-    Parser& operator=(Parser&&) = default;
+        Parser(Parser&&)            = default;
+        Parser& operator=(Parser&&) = default;
 
-    Data parse(int argc, char** argv);
+        Data parse(const std::string& json);
+
 };
