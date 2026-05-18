@@ -48,6 +48,7 @@ add_executable(calculator
     src/printer.cpp
     src/runner.cpp
     src/cache.cpp
+    src/config.cpp
 
 )
 
@@ -59,6 +60,42 @@ target_include_directories(calculator PRIVATE
 
 add_subdirectory(../database ${CMAKE_BINARY_DIR}/database)
 
-target_link_libraries(calculator PRIVATE mathlib nlohmann_json::nlohmann_json logger database)
+add_subdirectory(../server ${CMAKE_BINARY_DIR}/server)
+
+add_subdirectory(../signal_handler ${CMAKE_BINARY_DIR}/signal_handler)
+
+add_subdirectory(../client ${CMAKE_BINARY_DIR}/client_app)
+
+target_link_libraries(calculator PRIVATE mathlib nlohmann_json::nlohmann_json logger database server signal_handler)
 
 install(TARGETS calculator DESTINATION /usr/local/bin)
+
+# Установка дополнительных файлов
+install(FILES ${CMAKE_SOURCE_DIR}/../systemd/calculator.service
+        DESTINATION /etc/systemd/system)
+
+install(FILES ${CMAKE_SOURCE_DIR}/../config/calculator.conf
+        DESTINATION /etc/calculator)
+
+install(TARGETS calculator-client
+        DESTINATION /usr/local/bin
+        OPTIONAL)
+
+# CPack конфигурация
+set(CPACK_GENERATOR "DEB")
+set(CPACK_PACKAGE_NAME "calculator")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_CONTACT "ilnur-islamov@example.com")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Calculator TCP service with PostgreSQL backend")
+
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Ilnur Islamov")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-system1.83.0, libpq5, postgresql")
+set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+
+# Постустановочный скрипт — перезагрузить systemd
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
+    "${CMAKE_CURRENT_SOURCE_DIR}/../debian/postinst;${CMAKE_CURRENT_SOURCE_DIR}/../debian/prerm")
+
+include(CPack)

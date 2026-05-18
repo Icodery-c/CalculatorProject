@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+# Перезагрузить systemd чтобы он увидел новый сервис
+systemctl daemon-reload
+
+echo "Calculator service installed."
+echo "Start with: sudo systemctl start calculator"
+echo "Enable autostart: sudo systemctl enable calculator"

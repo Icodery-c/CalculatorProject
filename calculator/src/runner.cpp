@@ -1,12 +1,15 @@
 #include "runner.h"
 #include "logger.h"
+#include "config.h"
 
+#include <nlohmann/json.hpp>
+#include <unordered_map>
 #include <exception>
 #include <string>
-#include <unordered_map>
 
-static const std::string CONNECTION_STRING =
-    "host=localhost dbname=calculator_db user=calculator password=calculator";
+using json = nlohmann::json;
+
+static const std::string CONFIG_PATH = "/etc/calculator/calculator.conf";
 
 static const std::unordered_map<Operation, std::string> OPERATION_NAMES = {
     {Operation::Add,       "Add"},
@@ -19,19 +22,39 @@ static const std::unordered_map<Operation, std::string> OPERATION_NAMES = {
 
 static std::string operationToName(Operation op) {
     auto it = OPERATION_NAMES.find(op);
-    if (it == OPERATION_NAMES.end()) {
-        return "Unknown";
-    }
-    return it->second;
+    return it != OPERATION_NAMES.end() ? it->second : "Unknown";
 }
 
-Runner::Runner() : db(std::make_unique<database::Database>(CONNECTION_STRING)) {
+Runner::Runner() {
 
     auto& log = logger::Logger::Initialize();
+
+    // Загружаем конфиг
+    Config config;
+    
+    try {
+        
+        config.load(CONFIG_PATH);
+    
+    } catch (const std::exception& e) {
+    
+        log.warn("Cannot load config from " + CONFIG_PATH + ", using defaults: " + e.what());
+    
+    }
+
+    // Строим строку подключения к БД из конфига
+    std::string connStr =
+        "host="     + config.getString("database.host", "localhost") +
+        " dbname="  + config.getString("database.dbname", "calculator_db") +
+        " user="    + config.getString("database.user", "calculator") +
+        " password=" + config.getString("database.password", "calculator");
+
+    db = std::make_unique<database::Database>(connStr);
 
     log.debug("Warming up cache from database...");
 
     auto records = db->loadAllOperations();
+
     for (const auto& record : records) {
         Data data;
         data.num1 = record.num1;
@@ -50,58 +73,56 @@ Runner::Runner() : db(std::make_unique<database::Database>(CONNECTION_STRING)) {
         }
     }
 
+    
     log.info("Cache warmed up with " + std::to_string(records.size()) + " records");
+
+    unsigned short port = static_cast<unsigned short>(config.getInt("server.port", 5555));
+    
+    // Создаём сервер с handler-ом, который вызывает наш handleRequest
+    srv = std::make_unique<server::Server>(
+        port,
+        [this](const std::string& req) { return handleRequest(req); }
+    );
+
+    
 }
 
-void Runner::run(int argc, char** argv) {
+void Runner::run() {
+    auto& log = logger::Logger::Initialize();
+    log.info("Server starting...");
+    srv->run();
+}
+
+void Runner::stop() {
+    auto& log = logger::Logger::Initialize();
+    log.info("Stopping server...");
+    if (srv) {
+        srv->stop();
+    }
+}
+
+std::string Runner::handleRequest(const std::string& request) {
 
     auto& log = logger::Logger::Initialize();
+    json response;
 
     try {
-        log.info("Starting calculator application");
+        log.debug("Parsing request: " + request);
 
-        log.debug("Parsing input...");
-        Data data = parser.parse(argc, argv);
+        Data data = parser.parse(request);
 
-        if (data.op == Operation::Help) {
-            printer.printHelp();
-            return;
-        }
-
-        log.debug("Validating data...");
         checker.check(data);
 
         std::string key = Cache::makeKey(data);
 
         if (cache.contains(key)) {
-            log.info("Cache hit for key: " + key);
-            int result = cache.get(key);
-            printer.printResult(result);
-            return;
+            log.info("Cache hit");
+            response["result"] = cache.get(key);
+            response["status"] = 0;
+            return response.dump();
         }
 
-        log.debug("Cache miss, calculating...");
-
-        int result = 0;
-        int status = 0;
-        try {
-            result = calculator.calculate(data);
-        } catch (const std::exception& e) {
-            status = 1;
-            log.warn(std::string("Calculation failed: ") + e.what());
-
-            database::OperationRecord record;
-            record.num1      = data.num1;
-            record.num2      = data.num2;
-            record.operation = operationToName(data.op);
-            record.result    = 0;
-            record.status    = status;
-            record.hasNum2   = (data.op != Operation::Factorial);
-            db->saveOperation(record);
-
-            throw;
-        }
-
+        int result = calculator.calculate(data);
         cache.put(key, result);
 
         database::OperationRecord record;
@@ -113,12 +134,15 @@ void Runner::run(int argc, char** argv) {
         record.hasNum2   = (data.op != Operation::Factorial);
         db->saveOperation(record);
 
-        log.info("Result: " + std::to_string(result));
-        printer.printResult(result);
+        response["result"] = result;
+        response["status"] = 0;
 
     } catch (const std::exception& e) {
-
         log.error(std::string("Error: ") + e.what());
-        printer.printError(e.what());
+        response["result"] = 0;
+        response["status"] = 1;
+        response["error"]  = e.what();
     }
+
+    return response.dump();
 }

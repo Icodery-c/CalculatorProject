@@ -1,0 +1,18 @@
+[Unit]
+Description=Calculator TCP Service
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/calculator
+Restart=on-failure
+RestartSec=5
+User=ilnur-islamov
+
+# Логи через systemd journal
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# Остановить сервис перед удалением
+if systemctl is-active --quiet calculator; then
+    systemctl stop calculator
+fi
+
+if systemctl is-enabled --quiet calculator; then
+    systemctl disable calculator
+fi

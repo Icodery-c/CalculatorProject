@@ -27,14 +27,24 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(json)
 
+add_subdirectory(../server ${CMAKE_BINARY_DIR}/server)
+
+add_subdirectory(../client ${CMAKE_BINARY_DIR}/client)
+
+add_subdirectory(../database ${CMAKE_BINARY_DIR}/database)
+
+add_subdirectory(../signal_handler ${CMAKE_BINARY_DIR}/signal_handler)
+
 add_executable(calculator_tests
     src/test_calculator.cpp
     src/test_checker.cpp
     src/test_parser.cpp
+    src/test_client_server.cpp
     ../calculator/src/calculator.cpp
     ../calculator/src/checker.cpp
     ../calculator/src/parser.cpp
     ../calculator/src/cache.cpp
+    ../calculator/src/runner.cpp
 
 )
 
@@ -47,6 +57,10 @@ target_link_libraries(calculator_tests PRIVATE
     mathlib
     nlohmann_json::nlohmann_json
     logger
+    server
+    client
+    database
+    signal_handler
 )
 
 enable_testing()
